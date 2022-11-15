@@ -29,8 +29,9 @@ conn = sqlite3.connect(":memory:")
 db_cursor = conn.cursor() # Get a cursor object
 
 db_cursor.execute('''
-    CREATE TABLE books id INTEGER PRIMARY KEY, Title TEXT, Author TEXT, Qty INTEGER
+    CREATE TABLE books (id INTEGER PRIMARY KEY, Title TEXT, Author TEXT, Qty INTEGER)
 ''')
+print("Table created")
 conn.commit()
 
 # Records are initialized by creating multiple instances of the book class
@@ -42,6 +43,14 @@ book_5 = Book(3005, "Alice in Wonderland", "Lewis Caroll", 12)
 book_6 = Book(3006, "Animal Farm", "George Orwell", 32)
 book_7 = Book(3007, "The Stand", "Stephen King", 22)
 
+book_list = [book_1, book_2, book_3, book_4, book_5, book_6, book_7]
+
+# Populating books table with the records
+for book in book_list:
+    db_cursor.execute('''INSERT INTO books(id, Title, Author, Qty) 
+                    VALUES (?, ?, ?, ?)''', (book.id, book.title, book.author, book.qty))
+print("Books inserted")
+conn.commit()
 
 
 
