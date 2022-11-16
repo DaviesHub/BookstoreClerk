@@ -1,5 +1,9 @@
 import sqlite3
 
+# conn = sqlite3.connect("Data/ebookstore.db")
+conn = sqlite3.connect(":memory:")
+db_cursor = conn.cursor() # Get a cursor object
+
 class Book():
     '''A prototype of a book.'''
 
@@ -23,10 +27,6 @@ class Book():
 
         return string_repr
 
-
-# conn = sqlite3.connect("Data/ebookstore.db")
-conn = sqlite3.connect(":memory:")
-db_cursor = conn.cursor() # Get a cursor object
 
 db_cursor.execute('''
     CREATE TABLE books (id INTEGER PRIMARY KEY, Title TEXT, Author TEXT, Qty INTEGER)
@@ -53,13 +53,50 @@ print("Books inserted")
 conn.commit()
 
 
+def enter_book():
+    '''
+    This function will enable a user capture data about a book and create a new
+    book record in the database using the data
+    '''
+    
+    id = (input("Enter book id: "))
+    title = input("Enter book title: ").title()
+    author = input("Enter book author: ").title()
+    qty = (input("Enter book quantity: "))
 
-# Create functions to 
+    try:
+        id = int(id)
+    except ValueError:
+        print("Invalid book id entered")
 
-# Add new books
+    try:
+        qty = int(qty)
+    except ValueError:
+        print("Invalid quantity entered")
 
-# Update book information
+    # Create book object
+    new_book = Book(id, title, author, qty)
 
-# Delete books
+    with conn:
+        db_cursor.execute('''INSERT INTO books(id, Title, Author, Qty)
+                            VALUES (?, ?, ?, ?)''', (new_book.id, new_book.title, new_book.author, new_book.qty))
 
-# Search database to find books
+    print("Book added to database")
+
+
+
+
+
+
+def main():
+    '''Main function which presents the main menu to the user'''
+
+    while True:
+        # presenting the menu to the user.
+        menu = input('''Select one of the following options from the menu below:
+    1 - Enter book
+    2 - Update book
+    3 - Delete book
+    4 - Search books
+    0 - Exit
+    : ''')
