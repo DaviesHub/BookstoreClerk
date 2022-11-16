@@ -91,8 +91,35 @@ def enter_book():
 def update_book():
     '''This function enables a user update information about a book.'''
 
-    id = input("Enter the id of the book you want to update: ")
+    while True:
+        while True:
+            id = input("Enter the id of the book you want to update: ")
+            try:
+                id = int(id)
+                break
+            except ValueError:
+                print("Invalid id entered")
 
+        field = input('''Enter the number representing the information you want to update:
+        1 - id
+        2 - Title
+        3 - Author
+        4 - Quantity
+        0 - Exit
+        : ''')
+
+        if field == "1":
+            while True:
+                new_id = input("Enter the new id: ")
+                try:
+                    new_id = int(id)
+                    break
+                except ValueError:
+                    print("Invalid id entered")
+
+            with conn:
+                db_cursor.execute('''UPDATE books SET id = :new_id 
+                                    WHERE id = :old_id''', {'new_id': new_id, 'old_id': id})
 
 
 def main():
