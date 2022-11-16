@@ -116,10 +116,42 @@ def update_book():
                     break
                 except ValueError:
                     print("Invalid id entered")
-
             with conn:
                 db_cursor.execute('''UPDATE books SET id = :new_id 
-                                    WHERE id = :old_id''', {'new_id': new_id, 'old_id': id})
+                                    WHERE id = :old_id''', {"new_id": new_id, "old_id": id})
+            break
+
+        elif field == "2":
+            new_title = input("Enter the new title: ").title()
+            with conn:
+                db_cursor.execute('''UPDATE books SET Title = :new_title
+                                    WHERE id = :id''', {"new_title": new_title, "id": id})
+            break
+
+        elif field == "3":
+            new_author = input("Enter the new author").title()
+            with conn:
+                db_cursor.execute('''UPDATE books SET Author = :new_author
+                                    WHERE id = :id''', {"new_author": new_author, "id": id})
+            break
+
+        elif field == "4":
+            new_qty = input("Enter the new quantity: ")
+            try:
+                new_qty = int(new_qty)
+                break
+            except ValueError:
+                print("Invalid quantity entered")
+            with conn:
+                db_cursor.execute('''UPDATE books SET Qty = :new_qty 
+                                    WHERE id = :id''', {"new_qty": new_qty, "id": id})
+            break
+
+        elif field == "0":
+            break
+
+        else:
+            print("Invalid option")
 
 
 def main():
