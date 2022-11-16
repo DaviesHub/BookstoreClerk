@@ -28,29 +28,33 @@ class Book():
         return string_repr
 
 
-db_cursor.execute('''
-    CREATE TABLE books (id INTEGER PRIMARY KEY, Title TEXT, Author TEXT, Qty INTEGER)
-''')
-print("Table created")
-conn.commit()
+try:
+    db_cursor.execute('''
+        CREATE TABLE books (id INTEGER PRIMARY KEY, Title TEXT, Author TEXT, Qty INTEGER)
+    ''')
+    print("Table created")
+    conn.commit()
 
-# Records are initialized by creating multiple instances of the book class
-book_1 = Book(3001, "A Tale of Two Cities", "Charles Dickens", 30)
-book_2 = Book(3002, "Harry Potter and the Philosopher's Stone", "J.K. Rowling", 40)
-book_3 = Book(3003, "The Lion, the Witch and the Wardrobe", "C. S. Lewis", 25)
-book_4 = Book(3004, "The Lord of the Rings", "J. R. R. Tolkien", 37)
-book_5 = Book(3005, "Alice in Wonderland", "Lewis Caroll", 12)
-book_6 = Book(3006, "Animal Farm", "George Orwell", 32)
-book_7 = Book(3007, "The Stand", "Stephen King", 22)
+    # Records are initialized by creating multiple instances of the book class
+    book_1 = Book(3001, "A Tale of Two Cities", "Charles Dickens", 30)
+    book_2 = Book(3002, "Harry Potter and the Philosopher's Stone", "J.K. Rowling", 40)
+    book_3 = Book(3003, "The Lion, the Witch and the Wardrobe", "C. S. Lewis", 25)
+    book_4 = Book(3004, "The Lord of the Rings", "J. R. R. Tolkien", 37)
+    book_5 = Book(3005, "Alice in Wonderland", "Lewis Caroll", 12)
+    book_6 = Book(3006, "Animal Farm", "George Orwell", 32)
+    book_7 = Book(3007, "The Stand", "Stephen King", 22)
 
-book_list = [book_1, book_2, book_3, book_4, book_5, book_6, book_7]
+    book_list = [book_1, book_2, book_3, book_4, book_5, book_6, book_7]
 
-# Populating books table with the records
-for book in book_list:
-    db_cursor.execute('''INSERT INTO books(id, Title, Author, Qty) 
-                    VALUES (?, ?, ?, ?)''', (book.id, book.title, book.author, book.qty))
-print("Books inserted")
-conn.commit()
+    # Populating books table with the records
+    for book in book_list:
+        db_cursor.execute('''INSERT INTO books(id, Title, Author, Qty) 
+                        VALUES (?, ?, ?, ?)''', (book.id, book.title, book.author, book.qty))
+    print("Books inserted")
+    conn.commit()
+
+except sqlite3.OperationalError as exp:
+    print(exp)
 
 
 def enter_book():
@@ -84,7 +88,10 @@ def enter_book():
     print("Book added to database")
 
 
+def update_book():
+    '''This function enables a user update information about a book.'''
 
+    id = input("Enter the id of the book you want to update: ")
 
 
 
