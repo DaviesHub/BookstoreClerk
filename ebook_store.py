@@ -273,3 +273,24 @@ def main():
     4 - Search books
     0 - Exit
     : ''')
+
+        if menu == "1":
+            enter_book()
+
+        elif menu == "2":
+            update_book()
+
+        elif menu == "3":
+            delete_book()
+
+        elif menu == "4":
+            search_books()
+
+        elif menu == "0":
+            break
+
+        else:
+            print("Invalid selection")
+
+# Call main.
+main()
