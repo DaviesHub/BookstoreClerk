@@ -57,6 +57,21 @@ except sqlite3.OperationalError as exp:
     print(exp)
 
 
+def validate_id(id):
+    '''
+    This function receive an id, checks if any book in the database has the id
+    and returns True if the id exists. Otherwise, it returns False
+    '''
+
+    db_cursor.execute('''SELECT 1 FROM books WHERE id = :id_''', {"id_": id})
+    bool_value = db_cursor.fetchone()
+
+    if bool_value == 1:
+        return True
+    else:
+        return False
+
+
 def enter_book():
     '''
     This function will enable a user capture data about a book and create a new
@@ -85,20 +100,27 @@ def enter_book():
         db_cursor.execute('''INSERT INTO books(id, Title, Author, Qty)
                             VALUES (?, ?, ?, ?)''', (new_book.id, new_book.title, new_book.author, new_book.qty))
 
-    print("Book added to database")
+    print("Book %d added to database" %id)
 
 
 def update_book():
     '''This function enables a user update information about a book.'''
 
     while True:
+        # Input validation
         while True:
             id = input("Enter the id of the book you want to update: ")
             try:
                 id = int(id)
-                break
             except ValueError:
-                print("Invalid id entered")
+                print("The book id must be a number")
+                continue
+            
+            flag = validate_id(id)
+            if  flag == True:
+                break
+            else:
+                print("Book id not in database")
 
         field = input('''Enter the number representing the information you want to update:
         1 - id
@@ -152,6 +174,31 @@ def update_book():
 
         else:
             print("Invalid option")
+
+
+def delete_book():
+    '''This function will enable a user delete a book from the database.'''
+
+    while True:
+        book_id = input("Enter the id of the book you want to update: ")
+        try:
+            book_id = int(id)
+            break
+        except ValueError:
+            print("Invalid id entered")
+
+    # Initialize flag
+    flag = validate_id(id)
+    with conn:
+        db_cursor.execute('''DELETE FROM books WHERE id = :id_''', {"id_": book_id})
+
+    if  flag == True:
+        print("Book %d deleted" %book_id)
+    else:
+        print("No action taken as no book with the id exists")
+    
+
+
 
 
 def main():
