@@ -66,7 +66,7 @@ def validate_id(id):
     db_cursor.execute('''SELECT 1 FROM books WHERE id = :id_''', {"id_": id})
     bool_value = db_cursor.fetchone()
 
-    if bool_value == 1:
+    if bool_value[0] == 1:
         return True
     else:
         return False
