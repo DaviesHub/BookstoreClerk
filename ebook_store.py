@@ -221,25 +221,24 @@ def search_books():
             if flag[0] == 1:
                 db_cursor.execute('''SELECT id, Title, Author, Qty FROM books 
                                     WHERE id = :id_''', {"id_": book_id})
+                book_details = db_cursor.fetchone()
+                print(book_details)
             else:
-                print("Book not found")
-            # while True:
-            #     new_id = input("Enter the new id: ")
-            #     try:
-            #         new_id = int(id)
-            #         break
-            #     except ValueError:
-            #         print("Invalid id entered")
-            # with conn:
-            #     db_cursor.execute('''UPDATE books SET id = :new_id 
-            #                         WHERE id = :old_id''', {"new_id": new_id, "old_id": id})
-            # break
-
+                print("No books found")
+            break
+            
         elif field == "2":
-            new_title = input("Enter the new title: ").title()
-            with conn:
-                db_cursor.execute('''UPDATE books SET Title = :new_title
-                                    WHERE id = :id''', {"new_title": new_title, "id": id})
+            book_title = input("Enter the book title: ").title()
+            db_cursor.execute('''SELECT 1 FROM books WHERE title = :title_''', {"title_": book_title})
+            flag = db_cursor.fetchall() # Returns many books just in case more than one book shares the same title
+            if flag[0][0] == 1:
+                db_cursor.execute('''SELECT id, Title, Author, Qty FROM books WHERE books
+                                    WHERE Title = :title_''', {"title_": book_title})
+                book_details = db_cursor.fetchall()
+                for row in book_details:
+                    print(row)
+            else:
+                print("No books found")
             break
 
         elif field == "3":
