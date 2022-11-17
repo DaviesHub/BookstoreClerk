@@ -199,6 +199,79 @@ def delete_book():
     
 
 
+def search_books():
+    '''
+    This function enables a user search for specific books in the database
+    based on the id, title and author. The function then prints the book to the 
+    console if the book exists
+    '''
+
+    while True:
+        field = input('''Select the field you want to base the search on:
+        1 - id
+        2 - Title
+        3 - Author
+        0 - Exit
+        : ''')
+
+        if field == "1":
+            book_id = input("Enter the book id: ")
+            db_cursor.execute('''SELECT 1 FROM books WHERE id = :id_''', {"id_": book_id})
+            flag = db_cursor.fetchone() # Returns one book as each book has a unique id
+            if flag[0] == 1:
+                db_cursor.execute('''SELECT id, Title, Author, Qty FROM books 
+                                    WHERE id = :id_''', {"id_": book_id})
+            else:
+                print("Book not found")
+            # while True:
+            #     new_id = input("Enter the new id: ")
+            #     try:
+            #         new_id = int(id)
+            #         break
+            #     except ValueError:
+            #         print("Invalid id entered")
+            # with conn:
+            #     db_cursor.execute('''UPDATE books SET id = :new_id 
+            #                         WHERE id = :old_id''', {"new_id": new_id, "old_id": id})
+            # break
+
+        elif field == "2":
+            new_title = input("Enter the new title: ").title()
+            with conn:
+                db_cursor.execute('''UPDATE books SET Title = :new_title
+                                    WHERE id = :id''', {"new_title": new_title, "id": id})
+            break
+
+        elif field == "3":
+            new_author = input("Enter the new author").title()
+            with conn:
+                db_cursor.execute('''UPDATE books SET Author = :new_author
+                                    WHERE id = :id''', {"new_author": new_author, "id": id})
+            break
+
+        elif field == "4":
+            new_qty = input("Enter the new quantity: ")
+            try:
+                new_qty = int(new_qty)
+                break
+            except ValueError:
+                print("Invalid quantity entered")
+            with conn:
+                db_cursor.execute('''UPDATE books SET Qty = :new_qty 
+                                    WHERE id = :id''', {"new_qty": new_qty, "id": id})
+            break
+
+        elif field == "0":
+            break
+
+        else:
+            print("Invalid option")
+
+
+
+
+
+
 
 
 def main():
