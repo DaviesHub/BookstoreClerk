@@ -195,8 +195,7 @@ def delete_book():
     if  flag == True:
         print("Book %d deleted" %book_id)
     else:
-        print("No action taken as no book with the id exists")
-    
+        print("No action taken as no book with the id exists") 
 
 
 def search_books():
@@ -232,7 +231,7 @@ def search_books():
             db_cursor.execute('''SELECT 1 FROM books WHERE title = :title_''', {"title_": book_title})
             flag = db_cursor.fetchall() # Returns many books just in case more than one book shares the same title
             if flag[0][0] == 1:
-                db_cursor.execute('''SELECT id, Title, Author, Qty FROM books WHERE books
+                db_cursor.execute('''SELECT id, Title, Author, Qty FROM books
                                     WHERE Title = :title_''', {"title_": book_title})
                 book_details = db_cursor.fetchall()
                 for row in book_details:
@@ -242,22 +241,17 @@ def search_books():
             break
 
         elif field == "3":
-            new_author = input("Enter the new author").title()
-            with conn:
-                db_cursor.execute('''UPDATE books SET Author = :new_author
-                                    WHERE id = :id''', {"new_author": new_author, "id": id})
-            break
-
-        elif field == "4":
-            new_qty = input("Enter the new quantity: ")
-            try:
-                new_qty = int(new_qty)
-                break
-            except ValueError:
-                print("Invalid quantity entered")
-            with conn:
-                db_cursor.execute('''UPDATE books SET Qty = :new_qty 
-                                    WHERE id = :id''', {"new_qty": new_qty, "id": id})
+            book_author = input("Enter the new author").title()
+            db_cursor.execute('''SELECT 1 FROM books WHERE Author = :author_''', {"author_": book_author})
+            flag = db_cursor.fetchall() # Returns many books just in case more than one book shares the same author
+            if flag[0][0] == 1:
+                db_cursor.execute('''SELECT id, Title, Author, Qty FROM books 
+                                    WHERE Author = :author_''', {"author_": book_author})
+                book_details = db_cursor.fetchall()
+                for row in book_details:
+                    print(row)
+            else:
+                print("No books found")
             break
 
         elif field == "0":
@@ -265,12 +259,6 @@ def search_books():
 
         else:
             print("Invalid option")
-
-
-
-
-
-
 
 
 def main():
