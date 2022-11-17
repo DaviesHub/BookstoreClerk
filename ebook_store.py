@@ -198,7 +198,7 @@ def delete_book():
     '''This function will enable a user delete a book from the database.'''
 
     while True:
-        book_id = input("Enter the id of the book you want to update: ")
+        book_id = input("Enter the id of the book you want to delete: ")
         try:
             book_id = int(book_id)
             break
