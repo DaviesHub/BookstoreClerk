@@ -4,6 +4,7 @@ import sqlite3
 conn = sqlite3.connect(":memory:")
 db_cursor = conn.cursor() # Get a cursor object
 
+
 class Book():
     '''A prototype of a book.'''
 
@@ -317,6 +318,7 @@ def main():
 
         else:
             print("Invalid selection")
+
 
 # Call main.
 main()
