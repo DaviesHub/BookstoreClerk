@@ -37,7 +37,7 @@ try:
 
     # Records are initialized by creating multiple instances of the book class
     book_1 = Book(3001, "A Tale of Two Cities", "Charles Dickens", 30)
-    book_2 = Book(3002, "Harry Potter and the Philosopher's Stone", "J.K. Rowling", 40)
+    book_2 = Book(3002, "Harry Potter and the Philosopher's Stone", "J. K. Rowling", 40)
     book_3 = Book(3003, "The Lion, the Witch and the Wardrobe", "C. S. Lewis", 25)
     book_4 = Book(3004, "The Lord of the Rings", "J. R. R. Tolkien", 37)
     book_5 = Book(3005, "Alice in Wonderland", "Lewis Caroll", 12)
@@ -66,7 +66,7 @@ def validate_id(id):
     db_cursor.execute('''SELECT 1 FROM books WHERE id = :id_''', {"id_": id})
     bool_value = db_cursor.fetchone()
 
-    if bool_value[0] == 1:
+    if bool_value is not None:
         return True
     else:
         return False
@@ -78,20 +78,33 @@ def enter_book():
     book record in the database using the data
     '''
     
-    id = (input("Enter book id: "))
+    # Request and validate id
+    while True:
+        id = (input("Enter book id: "))
+        try:
+            id = int(id)
+        except ValueError:
+            print("Invalid book id entered")
+            continue
+        
+        flag = validate_id(id)
+        if  flag == True:
+            print("The id already exists")
+        else:
+            break
+
     title = input("Enter book title: ").title()
     author = input("Enter book author: ").title()
-    qty = (input("Enter book quantity: "))
+    
 
-    try:
-        id = int(id)
-    except ValueError:
-        print("Invalid book id entered")
-
-    try:
-        qty = int(qty)
-    except ValueError:
-        print("Invalid quantity entered")
+    # Request and validate quantity
+    while True:
+        qty = (input("Enter book quantity: "))
+        try:
+            qty = int(qty)
+            break
+        except ValueError:
+            print("Invalid quantity entered")
 
     # Create book object
     new_book = Book(id, title, author, qty)
@@ -134,13 +147,14 @@ def update_book():
             while True:
                 new_id = input("Enter the new id: ")
                 try:
-                    new_id = int(id)
+                    new_id = int(new_id)
                     break
                 except ValueError:
                     print("Invalid id entered")
             with conn:
                 db_cursor.execute('''UPDATE books SET id = :new_id 
                                     WHERE id = :old_id''', {"new_id": new_id, "old_id": id})
+            print("id updated")
             break
 
         elif field == "2":
@@ -148,25 +162,29 @@ def update_book():
             with conn:
                 db_cursor.execute('''UPDATE books SET Title = :new_title
                                     WHERE id = :id''', {"new_title": new_title, "id": id})
+            print("Title updated")
             break
 
         elif field == "3":
-            new_author = input("Enter the new author").title()
+            new_author = input("Enter the new author: ").title()
             with conn:
                 db_cursor.execute('''UPDATE books SET Author = :new_author
                                     WHERE id = :id''', {"new_author": new_author, "id": id})
+            print("Author updated")
             break
-
+            
         elif field == "4":
-            new_qty = input("Enter the new quantity: ")
-            try:
-                new_qty = int(new_qty)
-                break
-            except ValueError:
-                print("Invalid quantity entered")
+            while True:
+                new_qty = input("Enter the new quantity: ")
+                try:
+                    new_qty = int(new_qty)
+                    break
+                except ValueError:
+                    print("Invalid quantity entered")
             with conn:
                 db_cursor.execute('''UPDATE books SET Qty = :new_qty 
                                     WHERE id = :id''', {"new_qty": new_qty, "id": id})
+            print("Quantity updated")
             break
 
         elif field == "0":
@@ -182,13 +200,13 @@ def delete_book():
     while True:
         book_id = input("Enter the id of the book you want to update: ")
         try:
-            book_id = int(id)
+            book_id = int(book_id)
             break
         except ValueError:
             print("Invalid id entered")
 
     # Initialize flag
-    flag = validate_id(id)
+    flag = validate_id(book_id)
     with conn:
         db_cursor.execute('''DELETE FROM books WHERE id = :id_''', {"id_": book_id})
 
@@ -213,11 +231,19 @@ def search_books():
         0 - Exit
         : ''')
 
-        if field == "1":
-            book_id = input("Enter the book id: ")
+        if field == "1": 
+            while True:
+                # Validate id type
+                book_id = (input("Enter book id: "))
+                try:
+                    book_id = int(book_id)
+                    break
+                except ValueError:
+                    print("Invalid id entered")
+
             db_cursor.execute('''SELECT 1 FROM books WHERE id = :id_''', {"id_": book_id})
             flag = db_cursor.fetchone() # Returns one book as each book has a unique id
-            if flag[0] == 1:
+            if flag is not None:
                 db_cursor.execute('''SELECT id, Title, Author, Qty FROM books 
                                     WHERE id = :id_''', {"id_": book_id})
                 book_details = db_cursor.fetchone()
@@ -230,7 +256,7 @@ def search_books():
             book_title = input("Enter the book title: ").title()
             db_cursor.execute('''SELECT 1 FROM books WHERE title = :title_''', {"title_": book_title})
             flag = db_cursor.fetchall() # Returns many books just in case more than one book shares the same title
-            if flag[0][0] == 1:
+            if flag:
                 db_cursor.execute('''SELECT id, Title, Author, Qty FROM books
                                     WHERE Title = :title_''', {"title_": book_title})
                 book_details = db_cursor.fetchall()
@@ -241,10 +267,10 @@ def search_books():
             break
 
         elif field == "3":
-            book_author = input("Enter the new author").title()
+            book_author = input("Enter the author: ").title()
             db_cursor.execute('''SELECT 1 FROM books WHERE Author = :author_''', {"author_": book_author})
             flag = db_cursor.fetchall() # Returns many books just in case more than one book shares the same author
-            if flag[0][0] == 1:
+            if flag:
                 db_cursor.execute('''SELECT id, Title, Author, Qty FROM books 
                                     WHERE Author = :author_''', {"author_": book_author})
                 book_details = db_cursor.fetchall()
