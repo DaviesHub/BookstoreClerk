@@ -36,13 +36,13 @@ try:
     conn.commit()
 
     # Records are initialized by creating multiple instances of the book class
-    book_1 = Book(3001, "A Tale of Two Cities", "Charles Dickens", 30)
-    book_2 = Book(3002, "Harry Potter and the Philosopher's Stone", "J. K. Rowling", 40)
-    book_3 = Book(3003, "The Lion, the Witch and the Wardrobe", "C. S. Lewis", 25)
-    book_4 = Book(3004, "The Lord of the Rings", "J. R. R. Tolkien", 37)
-    book_5 = Book(3005, "Alice in Wonderland", "Lewis Caroll", 12)
-    book_6 = Book(3006, "Animal Farm", "George Orwell", 32)
-    book_7 = Book(3007, "The Stand", "Stephen King", 22)
+    book_1 = Book(3001, "a tale of two cities", "charles dickens", 30)
+    book_2 = Book(3002, "harry potter and the philosopher's stone", "j. k. rowling", 40)
+    book_3 = Book(3003, "the lion, the witch and the wardrobe", "c. s. lewis", 25)
+    book_4 = Book(3004, "the lord of the rings", "j. r. r. tolkien", 37)
+    book_5 = Book(3005, "alice in wonderland", "lewis caroll", 12)
+    book_6 = Book(3006, "animal farm", "george orwell", 32)
+    book_7 = Book(3007, "the stand", "stephen king", 22)
 
     book_list = [book_1, book_2, book_3, book_4, book_5, book_6, book_7]
 
@@ -93,8 +93,8 @@ def enter_book():
         else:
             break
 
-    title = input("Enter book title: ").title()
-    author = input("Enter book author: ").title()
+    title = input("Enter book title: ").casefold()
+    author = input("Enter book author: ").casefold()
     
 
     # Request and validate quantity
@@ -158,7 +158,7 @@ def update_book():
             break
 
         elif field == "2":
-            new_title = input("Enter the new title: ").title()
+            new_title = input("Enter the new title: ").lower()
             with conn:
                 db_cursor.execute('''UPDATE books SET Title = :new_title
                                     WHERE id = :id''', {"new_title": new_title, "id": id})
@@ -166,7 +166,7 @@ def update_book():
             break
 
         elif field == "3":
-            new_author = input("Enter the new author: ").title()
+            new_author = input("Enter the new author: ").lower()
             with conn:
                 db_cursor.execute('''UPDATE books SET Author = :new_author
                                     WHERE id = :id''', {"new_author": new_author, "id": id})
@@ -253,7 +253,7 @@ def search_books():
             break
             
         elif field == "2":
-            book_title = input("Enter the book title: ").title()
+            book_title = input("Enter the book title: ").casefold()
             db_cursor.execute('''SELECT 1 FROM books WHERE title = :title_''', {"title_": book_title})
             flag = db_cursor.fetchall() # Returns many books just in case more than one book shares the same title
             if flag:
@@ -267,7 +267,7 @@ def search_books():
             break
 
         elif field == "3":
-            book_author = input("Enter the author: ").title()
+            book_author = input("Enter the author: ").casefold()
             db_cursor.execute('''SELECT 1 FROM books WHERE Author = :author_''', {"author_": book_author})
             flag = db_cursor.fetchall() # Returns many books just in case more than one book shares the same author
             if flag:
