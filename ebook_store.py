@@ -314,6 +314,7 @@ def main():
             search_books()
 
         elif menu == "0":
+            conn.close()
             break
 
         else:
