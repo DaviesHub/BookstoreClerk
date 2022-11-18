@@ -318,7 +318,7 @@ def main():
 
         else:
             print("Invalid selection")
-
+conn.close()
 
 # Call main.
 main()
